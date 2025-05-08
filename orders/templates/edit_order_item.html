@@ -1,0 +1,24 @@
+{% extends 'layout.html' %}
+{% load widget_tweaks %}
+
+{% block title %}{% if form.instance.pk %}Edit{% else %}New{% endif %} Order Item{% endblock %}
+{% block body %}
+<section>
+  <h1>{% if form.instance.pk %}Edit{% else %}New{% endif %} Item for Order {{ order.id }}</h1>
+  <form method="post">{% csrf_token %}
+    <div class="form-group floating-label">
+      {{ form.product|add_class:"form-control select2-list" }}
+      <label for="{{ form.product.id_for_label }}">Product</label>
+    </div>
+    <div class="form-group floating-label">
+      {{ form.quantity|add_class:"form-control" }}
+      <label for="{{ form.quantity.id_for_label }}">Quantity</label>
+    </div>
+    <div class="form-group floating-label">
+      {{ form.price|add_class:"form-control" }}
+      <label for="{{ form.price.id_for_label }}">Price</label>
+    </div>
+    <button type="submit" class="btn btn-primary">Save Item</button>
+  </form>
+</section>
+{% endblock %}

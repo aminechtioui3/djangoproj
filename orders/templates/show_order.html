@@ -1,0 +1,34 @@
+{% extends 'layout.html' %}
+{% block title %}Order #{{ order.id }}{% endblock %}
+{% block body %}
+<section>
+  <h1>Order #{{ order.id }}</h1>
+  <p><strong>Customer:</strong> {{ order.name }}</p>
+  <p><strong>Phone:</strong> {{ order.phone }}</p>
+  <p><strong>Address:</strong> {{ order.address }}</p>
+  <p><strong>Delivery Date:</strong> {{ order.delivery_date }}</p>
+  <p><strong>Payment:</strong> {{ order.payment_option }}</p>
+  <p><strong>Status:</strong> {{ order.order_status }}</p>
+  <p><strong>Table:</strong> {{ order.table.code if order.table else '—' }}</p>
+  <p><strong>Waiter:</strong> {{ order.waiter.name if order.waiter else '—' }}</p>
+
+  <h2>Items</h2>
+  <table class="table">
+    <thead><tr><th>Product</th><th>Qty</th><th>Price</th></tr></thead>
+    <tbody>
+      {% for item in items %}
+      <tr>
+        <td>{{ item.product.product_name }}</td>
+        <td>{{ item.quantity }}</td>
+        <td>{{ item.price }}</td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="3">No items.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <a href="{% url 'new_order_item' order.id %}" class="btn btn-secondary">+ Add Item</a>
+  <a href="{% url 'index_order' %}" class="btn btn-light">Back to list</a>
+</section>
+{% endblock %}

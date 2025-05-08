@@ -36,7 +36,7 @@
                                                             <td>{{ product.product_details }}</td>
                                                             <td>{{ product.price }}</td>
                                                             <td>
-                                                                <a href="{% url 'delete_product' product.id %}" class="btn ink-reaction btn-floating-action btn-danger" onclick="return confirm('Are you sure you want to delete this?')"><i class="md md-delete"></i> </a>
+                                                                <a href="{% url 'destroy_product' product.id %}" class="btn ink-reaction btn-floating-action btn-danger" onclick="return confirm('Are you sure you want to delete this?')"><i class="md md-delete"></i> </a>
                                                             </td>
                                                         </tr>
                                                     {% endfor %}

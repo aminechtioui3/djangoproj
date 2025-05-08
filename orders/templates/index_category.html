@@ -1,0 +1,37 @@
+{% extends 'layout.html' %}
+{% load widget_tweaks %}
+
+{% block title %}Categories{% endblock %}
+
+{% block body %}
+<section>
+  <h1>Categories</h1>
+  <a href="{% url 'new_category' %}" class="btn btn-primary mb-3">+ New Category</a>
+  <table class="table">
+    <thead>
+      <tr><th>Name</th><th>Image</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
+      {% for c in categories %}
+      <tr>
+        <td>{{ c.name }}</td>
+        <td>
+          {% if c.image %}
+            <img src="{{ c.image.url }}" alt="{{ c.name }}" width="50">
+          {% endif %}
+        </td>
+        <td>
+          <a href="{% url 'edit_category' c.id %}">Edit</a> |
+          <a href="{% url 'destroy_category' c.id %}"
+             onclick="return confirm('Delete this category?');">
+            Delete
+          </a>
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="3">No categories yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}

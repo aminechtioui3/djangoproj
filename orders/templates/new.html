@@ -1,102 +1,142 @@
 {% extends 'layout.html' %}
-
 {% load widget_tweaks %}
 
-{% block title %} Add Orders {% endblock %}
+{% block title %} Add Order {% endblock %}
 
 {% block body %}
+<section>
+  <div class="section-body">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card">
+          <div class="card-head style-primary">
+            <header>Add Order</header>
+          </div>
+          <div class="card-body">
+            <form method="post" class="form" novalidate>
+              {% csrf_token %}
 
-                <section>
-					<div class="section-body">
-						<div class="row">
+              <!-- ── CUSTOMER & ORDER INFO ─────────────────────────────────── -->
+              <div class="row">
 
-							<!-- BEGIN  - FORM -->
-							<div class="col-lg-12">
-								<div class="card">
-									<div class="card-head style-primary">
-										<header>Add Order</header>
-										<div class="tools">
-											<a class="btn btn-icon-toggle btn-collapse"><i class="fa fa-angle-down"></i></a>
-											<a class="btn btn-icon-toggle btn-close"><i class="md md-close"></i></a>
-										</div>
-									</div>
-									<div class="card-body">
+                <!-- Customer Info -->
+                <div class="col-sm-6">
+                  <header>Customer Info</header>
+                  <div class="form-group floating-label">
+                    {{ form.name|add_class:"form-control" }}
+                    <label for="{{ form.name.id_for_label }}">Customer Name</label>
+                  </div>
+                  <div class="form-group floating-label">
+                    {{ form.phone|add_class:"form-control" }}
+                    <label for="{{ form.phone.id_for_label }}">Phone Number</label>
+                  </div>
+                  <div class="form-group floating-label">
+                    {{ form.address|add_class:"form-control"|attr:"rows:2" }}
+                    <label for="{{ form.address.id_for_label }}">Address</label>
+                  </div>
+                </div>
 
-										<form class="form" role="form" action="" method="post"> {% csrf_token %}
+                <!-- Order Info -->
+                <div class="col-sm-6">
+                  <header>Order Info</header>
+                  <div class="form-group floating-label">
+                    {{ form.delivery_date|add_class:"form-control"|attr:"type:date" }}
+                    <label for="{{ form.delivery_date.id_for_label }}">Delivery Date</label>
+                  </div>
+                  <div class="form-group floating-label">
+                    {{ form.payment_option|add_class:"form-control" }}
+                    <label for="{{ form.payment_option.id_for_label }}">Payment Option</label>
+                  </div>
+                  <div class="form-group floating-label">
+                    {{ form.table|add_class:"form-control select2-list" }}
+                    <label for="{{ form.table.id_for_label }}">Table</label>
+                  </div>
+                  <div class="form-group floating-label">
+                    {{ form.waiter|add_class:"form-control select2-list" }}
+                    <label for="{{ form.waiter.id_for_label }}">Waiter</label>
+                  </div>
+                </div>
 
-											<div class="row">
-												<div class="col-sm-6">
-													<header>Customer Info</header>
-													<div class="form-group floating-label">
-														{{ form.name | add_class:'form-control' }}
-														<label for="regular2">Customer Name</label>
-													</div>
-													<div class="form-group floating-label">
-														{{ form.phone | add_class:'form-control' }}
-														<label for="regular2">Phone Number</label>
-													</div>
-													<div class="form-group floating-label">
-														{{ form.address | add_class:'form-control' | attr:'rows:2'}}
-														<label for="textarea2">Address</label>
-													</div>
-												</div>
-												<div class="col-sm-6">
-													<header >Order Info</header>
-													<div class="form-group">
-														{{ form.delivery_date | add_class:'form-control' | attr:'type:date'}}
-														<label for="regular2">Delivery Dater</label>
-													</div>
-													<div class="form-group floating-label">
-														{{ form.product_id | add_class:'form-control select2-list' | attr:'id:product_id'}}
-														<label for="textarea2">Product ID</label>
-													</div>
-                                                    <div class="row">
-														<div class="col-sm-6">
-															<div class="form-group floating-label">
-																{{ form.payment_option| add_class:'form-control' }}
-																<label for="select2">Payment Options</label>
-															</div>
-														</div>
-														<div class="col-sm-6">
-															<div class="form-group floating-label">
-																{{ form.quantity | add_class:'form-control'}}
-																<label for="regular2">Quantity</label>
-															</div>
-														</div>
-													</div>
-												</div>
-												<div class="col-md-12">
-													<hr>
-													<label class="radio-inline radio-styled col-sm-2">
-														<b>Order Status :</b>
-													</label>
-													<div class="col-md-10">
-														<div class="row">
-                                                        {% for radio in form.order_status %}
-                                                        	<div class="col-md-2">
-                                                        		<label class="radio-inline radio-styled">
-                                                                	{{ radio }}
-                                                            	</label>
-                                                        	</div>
-                                                        {% endfor %}
-                                                        </div>
-													</div>
-												</div>
-												<div class="col-md-12">
-													<hr>
-													<div class="card-actionbar-row">
-														<input type="submit" class="btn btn-flat btn-primary ink-reaction" value="SUBMIT">
-													</div>
-												</div>
-											</div>
-										</form>
-									</div><!--end .card-body -->
-								</div><!--end .card -->
-							</div><!--end .col -->
-							<!-- END FORM - TIME ON SITE -->
+              </div>
+              <!-- / CUSTOMER & ORDER INFO -->
 
-						</div><!--end .row -->
-					</div><!--end .section-body -->
-				</section>
+              <div class="col-md-12"><hr></div>
+
+              <!-- ── ORDER STATUS ─────────────────────────────────────────────── -->
+              <div class="col-md-12">
+                <label class="radio-inline radio-styled col-sm-2"><b>Order Status:</b></label>
+                <div class="col-md-10">
+                  <div class="row">
+                    {% for radio in form.order_status %}
+                      <div class="col-md-2">
+                        <label class="radio-inline radio-styled">
+                          {{ radio }}
+                        </label>
+                      </div>
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-12"><hr></div>
+
+              <!-- ── ORDER ITEMS FORMSET ──────────────────────────────────────── -->
+              <header>Order Items</header>
+              {{ formset.management_form }}
+              <div id="order-items">
+                {% for subform in formset.forms %}
+                  <div class="row order-item mb-3">
+                    <div class="col-sm-4 form-group floating-label">
+                      {{ subform.product|add_class:"form-control select2-list" }}
+                      <label for="{{ subform.product.id_for_label }}">Product</label>
+                    </div>
+                    <div class="col-sm-3 form-group floating-label">
+                      {{ subform.quantity|add_class:"form-control" }}
+                      <label for="{{ subform.quantity.id_for_label }}">Quantity</label>
+                    </div>
+                    <div class="col-sm-3 form-group floating-label">
+                      {{ subform.price|add_class:"form-control"|attr:"readonly:true" }}
+                      <label for="{{ subform.price.id_for_label }}">Price</label>
+                    </div>
+                    <div class="col-sm-2">
+                      {% if formset.can_delete %}
+                        <div class="form-group">
+                          {{ subform.DELETE }}
+                          <label for="{{ subform.DELETE.id_for_label }}">Remove</label>
+                        </div>
+                      {% endif %}
+                    </div>
+                  </div>
+                {% endfor %}
+              </div>
+
+              <button type="button" id="add-item" class="btn btn-sm btn-secondary mb-4">
+                + Add another item
+              </button>
+
+              <div class="col-md-12"><hr></div>
+
+              <!-- ── SUBMIT ────────────────────────────────────────────────────── -->
+              <div class="card-actionbar-row">
+                <button type="submit" class="btn btn-flat btn-primary ink-reaction">
+                  Submit Order
+                </button>
+              </div>
+
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{# 
+  If you want the “+ Add another item” button to dynamically clone and increment the formset
+  without a full page reload, you’ll need a tiny bit of JavaScript that:
+    1. Reads the TOTAL_FORMS count from the management form
+    2. Clones the last .order-item row, updates its field names/IDs, clears values, increments total
+    3. Re-appends into #order-items and bumps TOTAL_FORMS
+#}
 
 {% endblock %}

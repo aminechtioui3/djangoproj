@@ -1,0 +1,87 @@
+{% extends 'layout.html' %}
+{% load widget_tweaks %}
+
+{% block title %}New Order{% endblock %}
+
+{% block body %}
+<section>
+  <h1>New Order</h1>
+  <form method="post">{% csrf_token %}
+    <div class="row">
+      <div class="col-sm-6">
+        <div class="form-group floating-label">
+          {{ form.name|add_class:"form-control" }}
+          <label for="{{ form.name.id_for_label }}">Customer Name</label>
+        </div>
+        <div class="form-group floating-label">
+          {{ form.phone|add_class:"form-control" }}
+          <label for="{{ form.phone.id_for_label }}">Phone</label>
+        </div>
+        <div class="form-group floating-label">
+          {{ form.address|add_class:"form-control"|attr:"rows:2" }}
+          <label for="{{ form.address.id_for_label }}">Address</label>
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <div class="form-group floating-label">
+          {{ form.delivery_date|add_class:"form-control"|attr:"type:date" }}
+          <label for="{{ form.delivery_date.id_for_label }}">Delivery Date</label>
+        </div>
+        <div class="form-group floating-label">
+          {{ form.payment_option|add_class:"form-control" }}
+          <label for="{{ form.payment_option.id_for_label }}">Payment Option</label>
+        </div>
+        <div class="form-group floating-label">
+          {{ form.table|add_class:"form-control select2-list" }}
+          <label for="{{ form.table.id_for_label }}">Table</label>
+        </div>
+        <div class="form-group floating-label">
+          {{ form.waiter|add_class:"form-control select2-list" }}
+          <label for="{{ form.waiter.id_for_label }}">Waiter</label>
+        </div>
+      </div>
+    </div>
+
+    <hr>
+    <div class="row">
+      <label class="col-sm-2"><b>Status:</b></label>
+      <div class="col-sm-10">
+        <div class="row">
+          {% for radio in form.order_status %}
+          <div class="col-sm-2">
+            <label class="radio-inline">{{ radio }}</label>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <hr>
+    <h3>Order Items</h3>
+    {{ formset.management_form }}
+    <div id="order-items">
+      {% for sf in formset.forms %}
+      <div class="row mb-2">
+        <div class="col-sm-4 form-group floating-label">
+          {{ sf.product|add_class:"form-control select2-list" }}
+          <label>Product</label>
+        </div>
+        <div class="col-sm-3 form-group floating-label">
+          {{ sf.quantity|add_class:"form-control" }}
+          <label>Quantity</label>
+        </div>
+        <div class="col-sm-3 form-group floating-label">
+          {{ sf.price|add_class:"form-control"|attr:"readonly:true" }}
+          <label>Price</label>
+        </div>
+        <div class="col-sm-2">
+          {% if formset.can_delete %}{{ sf.DELETE }}{% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit Order</button>
+  </form>
+</section>
+{% endblock %}

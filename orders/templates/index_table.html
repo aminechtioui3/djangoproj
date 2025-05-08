@@ -1,0 +1,31 @@
+{% extends 'layout.html' %}
+{% block title %}Tables{% endblock %}
+{% block body %}
+<section>
+  <h1>Tables</h1>
+  <a href="{% url 'new_table' %}" class="btn btn-primary mb-3">+ New Table</a>
+  <table class="table">
+    <thead>
+      <tr><th>Code</th><th>Seats</th><th>Status</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
+      {% for t in tables %}
+      <tr>
+        <td>{{ t.code }}</td>
+        <td>{{ t.number_of_seats }}</td>
+        <td>{{ t.get_status_display }}</td>
+        <td>
+          <a href="{% url 'edit_table' t.id %}">Edit</a> |
+          <a href="{% url 'destroy_table' t.id %}"
+             onclick="return confirm('Delete this table?');">
+            Delete
+          </a>
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="4">No tables.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}

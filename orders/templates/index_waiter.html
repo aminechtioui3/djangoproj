@@ -1,0 +1,31 @@
+{% extends 'layout.html' %}
+{% block title %}Waiters{% endblock %}
+{% block body %}
+<section>
+  <h1>Waiters</h1>
+  <a href="{% url 'new_waiter' %}" class="btn btn-primary mb-3">+ New Waiter</a>
+  <table class="table">
+    <thead>
+      <tr><th>Name</th><th>Code</th><th>Status</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
+      {% for w in waiters %}
+      <tr>
+        <td>{{ w.name }}</td>
+        <td>{{ w.code }}</td>
+        <td>{{ w.get_status_display }}</td>
+        <td>
+          <a href="{% url 'edit_waiter' w.id %}">Edit</a> |
+          <a href="{% url 'destroy_waiter' w.id %}"
+             onclick="return confirm('Delete this waiter?');">
+            Delete
+          </a>
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="4">No waiters.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}

@@ -1,4 +1,4 @@
-{% load staticfiles %}
+{% load static %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -139,7 +139,7 @@
 							<!--start submenu -->
 							<ul>
                                 <li><a href="{% url 'home'%}" ><span class="title">All Orders</span></a></li>
-								<li><a href="{% url 'new' %}" ><span class="title">Add Order</span></a></li>
+								<li><a href="{% url 'new_order' %}"><span class="title">Add Order</span></a></li>
 							</ul><!--end /submenu -->
 						</li><!--end /menu-li -->
 						<!-- END ORDER -->
@@ -152,25 +152,61 @@
 							</a>
 							<!--start submenu -->
 							<ul>
-                                <li><a href="{% url 'home_product'%}" ><span class="title">All Products</span></a></li>
+                                <li><a href="{% url 'index_product'%}" ><span class="title">All Products</span></a></li>
 								<li><a href="{% url 'new_product' %}" ><span class="title">Add Product</span></a></li>
 							</ul><!--end /submenu -->
 						</li><!--end /menu-li -->
 						<!-- END PRODUCT -->
 
-						<!-- BEGIN PROFILE -->
+						<!-- TABLES -->
 						<li class="gui-folder">
 							<a>
-								<div class="gui-icon"><i class="fa fa-user"></i></div>
-								<span class="title">Profile</span>
+							  <div class="gui-icon"><i class="fa fa-table"></i></div>
+							  <span class="title">Tables</span>
 							</a>
-							<!--start submenu -->
 							<ul>
-								<li><a href="{% url 'change_password' %}" ><span class="title">Change Password</span></a></li>
-								<li><a href="{% url 'logout' %}" ><span class="title">Logout</span></a></li>
-							</ul><!--end /submenu -->
-						</li><!--end /menu-li -->
-						<!-- END PROFILE -->
+							  <li>
+								<a href="{% url 'index_table' %}"><span class="title">All Tables</span></a>
+							  </li>
+							  <li>
+								<a href="{% url 'new_table' %}"><span class="title">Add Table</span></a>
+							  </li>
+							</ul>
+						  </li>
+				
+						  <!-- WAITERS -->
+						  <li class="gui-folder">
+							<a>
+							  <div class="gui-icon"><i class="fa fa-user"></i></div>
+							  <span class="title">Waiters</span>
+							</a>
+							<ul>
+							  <li>
+								<a href="{% url 'index_waiter' %}"><span class="title">All Waiters</span></a>
+							  </li>
+							  <li>
+								<a href="{% url 'new_waiter' %}"><span class="title">Add Waiter</span></a>
+							  </li>
+							</ul>
+						  </li>
+				
+						  <!-- PROFILE -->
+						  <li class="gui-folder">
+							<a>
+							  <div class="gui-icon"><i class="fa fa-user-circle"></i></div>
+							  <span class="title">Profile</span>
+							</a>
+							<ul>
+							  <li>
+								<a href="{% url 'change_password' %}"><span class="title">Change Password</span></a>
+							  </li>
+							  <li>
+								<a href="{% url 'logout' %}"><span class="title">Logout</span></a>
+							  </li>
+							</ul>
+						  </li>
+				
+						</ul>
 
 					</ul><!--end .main-menu -->
 					<!-- END MAIN MENU -->
