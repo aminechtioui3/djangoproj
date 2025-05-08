@@ -12,7 +12,6 @@ from .forms import (
     OrderItemFormSet
 )
 
-
 # ─── CATEGORY ───────────────────────────────────────────────────────────────
 @login_required
 def index_category(request):
@@ -25,10 +24,12 @@ def new_category(request):
         form = CategoryForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
-            return redirect('index_category', messages.success(request, 'Category created.', 'alert-success'))
+            messages.success(request, 'Category created.', 'alert-success')
+            return redirect('index_category')
     else:
         form = CategoryForm()
     return render(request, 'new_category.html', {'form': form})
+
 @login_required
 def edit_category(request, category_id):
     category = get_object_or_404(Category, id=category_id)
@@ -36,9 +37,8 @@ def edit_category(request, category_id):
         form = CategoryForm(request.POST, request.FILES, instance=category)
         if form.is_valid():
             form.save()
-            return redirect('/categories', messages.success(request, 'Category updated.', 'alert-success'))
-        else:
-            return render(request, 'edit_category.html', {'form': form})
+            messages.success(request, 'Category updated.', 'alert-success')
+            return redirect('index_category')
     else:
         form = CategoryForm(instance=category)
     return render(request, 'edit_category.html', {'form': form})
@@ -47,13 +47,15 @@ def edit_category(request, category_id):
 def destroy_category(request, category_id):
     category = get_object_or_404(Category, id=category_id)
     category.delete()
-    return redirect('/categories', messages.success(request, 'Category deleted.', 'alert-success'))
+    messages.success(request, 'Category deleted.', 'alert-success')
+    return redirect('index_category')
 
 # ─── PRODUCT ────────────────────────────────────────────────────────────────
 @login_required
 def index_product(request):
     products = Product.objects.filter(active=True)
     return render(request, 'index_product.html', {'products': products})
+
 @login_required
 def new_product(request):
     if request.method == 'POST':
@@ -62,13 +64,10 @@ def new_product(request):
             form.save()
             messages.success(request, 'Product created.', 'alert-success')
             return redirect('index_product')
-        # if we get here, form.errors is non-empty
     else:
         form = ProductForm()
+    return render(request, 'new_product.html', {'product_form': form})
 
-    return render(request, 'new_product.html', {
-        'product_form': form,  # carries form.errors
-    })
 @login_required
 def edit_product(request, product_id):
     product = get_object_or_404(Product, id=product_id)
@@ -80,15 +79,16 @@ def edit_product(request, product_id):
             return redirect('index_product')
     else:
         form = ProductForm(instance=product)
-    return render(request, 'edit_product.html', {'product_form': form})
-
+    return render(request, 'edit_product.html', {
+               'product_form': form,
+               'product': product,
+    })
 
 @login_required
 def destroy_product(request, product_id):
     Product.objects.filter(id=product_id).update(active=False)
     messages.success(request, 'Product deleted.', 'alert-success')
     return redirect('index_product')
-
 
 # ─── TABLE ──────────────────────────────────────────────────────────────────
 @login_required
@@ -102,7 +102,8 @@ def new_table(request):
         form = TableForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('index_table', messages.success(request, 'Table created.', 'alert-success'))
+            messages.success(request, 'Table created.', 'alert-success')
+            return redirect('index_table')
     else:
         form = TableForm()
     return render(request, 'new_table.html', {'form': form})
@@ -116,8 +117,6 @@ def edit_table(request, table_id):
             form.save()
             messages.success(request, 'Table updated.', 'alert-success')
             return redirect('index_table')
-        else:
-            return render(request, 'edit_table.html', {'form': form})
     else:
         form = TableForm(instance=table)
     return render(request, 'edit_table.html', {'form': form})
@@ -128,7 +127,6 @@ def destroy_table(request, table_id):
     table.delete()
     messages.success(request, 'Table destroyed.', 'alert-success')
     return redirect('index_table')
-
 
 # ─── WAITER ─────────────────────────────────────────────────────────────────
 @login_required
@@ -142,7 +140,8 @@ def new_waiter(request):
         form = WaiterForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
-            return redirect('index_waiter', messages.success(request, 'Waiter created.', 'alert-success'))
+            messages.success(request, 'Waiter created.', 'alert-success')
+            return redirect('index_waiter')
     else:
         form = WaiterForm()
     return render(request, 'new_waiter.html', {'form': form})
@@ -154,9 +153,8 @@ def edit_waiter(request, waiter_id):
         form = WaiterForm(request.POST, request.FILES, instance=waiter)
         if form.is_valid():
             form.save()
-            return redirect('/waiters', messages.success(request, 'Waiter updated.', 'alert-success'))
-        else:
-            return render(request, 'edit_waiter.html', {'form': form})
+            messages.success(request, 'Waiter updated.', 'alert-success')
+            return redirect('index_waiter')
     else:
         form = WaiterForm(instance=waiter)
     return render(request, 'edit_waiter.html', {'form': form})
@@ -165,10 +163,8 @@ def edit_waiter(request, waiter_id):
 def destroy_waiter(request, waiter_id):
     waiter = get_object_or_404(Waiter, id=waiter_id)
     waiter.delete()
-    return redirect('/waiters', messages.success(request, 'Waiter deleted.', 'alert-success'))
-
-
-
+    messages.success(request, 'Waiter deleted.', 'alert-success')
+    return redirect('index_waiter')
 
 # ─── ORDER ──────────────────────────────────────────────────────────────────
 @login_required
@@ -176,13 +172,11 @@ def index_order(request):
     orders = Order.objects.all()
     return render(request, 'index_order.html', {'orders': orders})
 
-
 @login_required
 def show_order(request, order_id):
     order = get_object_or_404(Order, id=order_id)
     items = order.items.select_related('product').all()
     return render(request, 'show_order.html', {'order': order, 'items': items})
-
 
 @login_required
 def new_order(request):
@@ -193,15 +187,13 @@ def new_order(request):
             order = form.save()
             formset.instance = order
             formset.save()
-            return redirect('index_order', messages.success(request, 'Order created.', 'alert-success'))
+            messages.success(request, 'Order created.', 'alert-success')
+            return redirect('index_order')
     else:
-        form = OrderForm()
-        formset = OrderItemFormSet()
-    return render(request, 'new_order.html', {
-        'form': form,
-        'formset': formset,
-    })
 
+        form = OrderForm(initial={'order_status': 'Confirm'})
+        formset = OrderItemFormSet()
+    return render(request, 'new_order.html', {'form': form, 'formset': formset})
 
 @login_required
 def edit_order(request, order_id):
@@ -212,24 +204,21 @@ def edit_order(request, order_id):
         if form.is_valid() and formset.is_valid():
             form.save()
             formset.save()
-            return redirect('index_order', messages.success(request, 'Order updated.', 'alert-success'))
+            messages.success(request, 'Order updated.', 'alert-success')
+            return redirect('index_order')
     else:
         form = OrderForm(instance=order)
         formset = OrderItemFormSet(instance=order)
-    return render(request, 'edit_order.html', {
-        'form': form,
-        'formset': formset,
-    })
-
+    return render(request, 'edit_order.html', {'form': form, 'formset': formset})
 
 @login_required
 def destroy_order(request, order_id):
     order = get_object_or_404(Order, id=order_id)
     order.delete()
-    return redirect('index_order', messages.success(request, 'Order deleted.', 'alert-success'))
+    messages.success(request, 'Order deleted.', 'alert-success')
+    return redirect('index_order')
 
-
-# ─── ORDER ITEM (optional standalone)────────────────────────────────────────
+# ─── ORDER ITEM ──────────────────────────────────────────────────────────────
 @login_required
 def new_order_item(request, order_id):
     order = get_object_or_404(Order, id=order_id)
@@ -239,7 +228,8 @@ def new_order_item(request, order_id):
             item = form.save(commit=False)
             item.order = order
             item.save()
-            return redirect('show_order', order_id, messages.success(request, 'Item added.', 'alert-success'))
+            messages.success(request, 'Item added.', 'alert-success')
+            return redirect('show_order', order_id)
     else:
         form = OrderItemForm()
     return render(request, 'new_order_item.html', {'form': form, 'order': order})
@@ -251,9 +241,8 @@ def edit_order_item(request, item_id):
         form = OrderItemForm(request.POST, instance=item)
         if form.is_valid():
             form.save()
-            return redirect(f'/orders/{item.order.id}', messages.success(request, 'Item updated.', 'alert-success'))
-        else:
-            return render(request, 'edit_order_item.html', {'form': form, 'order': item.order})
+            messages.success(request, 'Item updated.', 'alert-success')
+            return redirect('show_order', item.order.id)
     else:
         form = OrderItemForm(instance=item)
     return render(request, 'edit_order_item.html', {'form': form, 'order': item.order})
@@ -263,4 +252,5 @@ def destroy_order_item(request, item_id):
     item = get_object_or_404(OrderItem, id=item_id)
     order_id = item.order.id
     item.delete()
-    return redirect(f'/orders/{order_id}', messages.success(request, 'Item deleted.', 'alert-success'))
+    messages.success(request, 'Item deleted.', 'alert-success')
+    return redirect('show_order', order_id)

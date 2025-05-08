@@ -1,87 +1,312 @@
 {% extends 'layout.html' %}
 {% load widget_tweaks %}
 
-{% block title %}New Order{% endblock %}
+{% block title %}Edit Order #{{ order.id }}{% endblock %}
 
 {% block body %}
-<section>
-  <h1>New Order</h1>
-  <form method="post">{% csrf_token %}
-    <div class="row">
-      <div class="col-sm-6">
-        <div class="form-group floating-label">
-          {{ form.name|add_class:"form-control" }}
-          <label for="{{ form.name.id_for_label }}">Customer Name</label>
-        </div>
-        <div class="form-group floating-label">
-          {{ form.phone|add_class:"form-control" }}
-          <label for="{{ form.phone.id_for_label }}">Phone</label>
-        </div>
-        <div class="form-group floating-label">
-          {{ form.address|add_class:"form-control"|attr:"rows:2" }}
-          <label for="{{ form.address.id_for_label }}">Address</label>
+<section class="container">
+  <h1 class="mb-4">Edit Order #{{ order.id }}</h1>
+
+  <!-- Form Error Messages -->
+  {% if form.errors or formset.errors %}
+  <div class="alert alert-danger mb-4">
+    <h4 class="alert-heading">Form Errors</h4>
+    <ul class="mb-0">
+      {% for field in form %}
+        {% for error in field.errors %}
+          <li><strong>{{ field.label }}:</strong> {{ error }}</li>
+        {% endfor %}
+      {% endfor %}
+      {% for error in form.non_field_errors %}
+        <li>{{ error }}</li>
+      {% endfor %}
+      {% for form in formset %}
+        {% for error in form.errors.values %}
+          <li>{{ error }}</li>
+        {% endfor %}
+      {% endfor %}
+      {% for error in formset.non_form_errors %}
+        <li>{{ error }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+
+  <form id="order-form" method="post" novalidate>{% csrf_token %}
+    <div class="row mb-4">
+      <div class="col-md-6">
+        <!-- Customer Information -->
+        <div class="card mb-4">
+          <div class="card-header">Customer Details</div>
+          <div class="card-body">
+            <div class="form-floating mb-3">
+              {% render_field form.name class="form-control" %}
+              <label for="{{ form.name.id_for_label }}">Full Name</label>
+            </div>
+            <div class="form-floating mb-3">
+              {% render_field form.phone class="form-control" %}
+              <label for="{{ form.phone.id_for_label }}">Phone Number</label>
+            </div>
+            <div class="form-floating mb-3">
+              {% render_field form.address class="form-control" rows="2" %}
+              <label for="{{ form.address.id_for_label }}">Delivery Address</label>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="col-sm-6">
-        <div class="form-group floating-label">
-          {{ form.delivery_date|add_class:"form-control"|attr:"type:date" }}
-          <label for="{{ form.delivery_date.id_for_label }}">Delivery Date</label>
-        </div>
-        <div class="form-group floating-label">
-          {{ form.payment_option|add_class:"form-control" }}
-          <label for="{{ form.payment_option.id_for_label }}">Payment Option</label>
-        </div>
-        <div class="form-group floating-label">
-          {{ form.table|add_class:"form-control select2-list" }}
-          <label for="{{ form.table.id_for_label }}">Table</label>
-        </div>
-        <div class="form-group floating-label">
-          {{ form.waiter|add_class:"form-control select2-list" }}
-          <label for="{{ form.waiter.id_for_label }}">Waiter</label>
+
+      <div class="col-md-6">
+        <!-- Order Details -->
+        <div class="card mb-4">
+          <div class="card-header">Order Information</div>
+          <div class="card-body">
+            <div class="form-floating mb-3">
+              {% render_field form.delivery_date class="form-control" type="date" %}
+              <label for="{{ form.delivery_date.id_for_label }}">Delivery Date</label>
+            </div>
+            <div class="form-floating mb-3">
+              {% render_field form.payment_option class="form-select" %}
+              <label for="{{ form.payment_option.id_for_label }}">Payment Method</label>
+            </div>
+            <div class="form-floating mb-3">
+              {% render_field form.table class="form-select" %}
+              <label for="{{ form.table.id_for_label }}">Table Number</label>
+            </div>
+            <div class="form-floating">
+              {% render_field form.waiter class="form-select" %}
+              <label for="{{ form.waiter.id_for_label }}">Assigned Waiter</label>
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
-    <hr>
-    <div class="row">
-      <label class="col-sm-2"><b>Status:</b></label>
-      <div class="col-sm-10">
-        <div class="row">
-          {% for radio in form.order_status %}
-          <div class="col-sm-2">
-            <label class="radio-inline">{{ radio }}</label>
-          </div>
+    <!-- Order Status -->
+    <div class="card mb-4">
+      <div class="card-header">Order Status</div>
+      <div class="card-body">
+        <div class="btn-group" role="group" aria-label="Order status">
+          {% for choice in form.order_status %}
+            <div class="form-check form-check-inline">
+              {{ choice.tag }}
+              <label class="form-check-label btn btn-outline-primary {% if choice.choice_value == form.instance.order_status %}active{% endif %}"
+                     for="{{ choice.id_for_label }}">
+                {{ choice.choice_label }}
+              </label>
+            </div>
           {% endfor %}
         </div>
       </div>
     </div>
 
-    <hr>
-    <h3>Order Items</h3>
-    {{ formset.management_form }}
-    <div id="order-items">
-      {% for sf in formset.forms %}
-      <div class="row mb-2">
-        <div class="col-sm-4 form-group floating-label">
-          {{ sf.product|add_class:"form-control select2-list" }}
-          <label>Product</label>
+    <!-- Order Items -->
+    <div class="card mb-4">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h3 class="mb-0">Order Items</h3>
+        <button type="button" id="add-item" class="btn btn-sm btn-secondary">
+          <i class="bi bi-plus-lg"></i> Add Item
+        </button>
+      </div>
+
+      <div class="card-body">
+        {{ formset.management_form }}
+        <div id="order-items">
+          {% for sf in formset.forms %}
+          <div class="row align-items-end mb-3 order-item" data-index="{{ forloop.counter0 }}">
+            <div class="col-md-4 form-group floating-label">
+              {% render_field sf.product class="form-control product-select" %}
+              <label>Product</label>
+            </div>
+            <div class="col-md-2 form-group floating-label">
+              {% render_field sf.quantity class="form-control qty-input" %}
+              <label>Qty</label>
+            </div>
+            <div class="col-md-2 form-group floating-label">
+              {% render_field sf.price class="form-control price-input" readonly="readonly" %}
+              <label>Price</label>
+            </div>
+            <div class="col-md-2">
+              {% if sf.instance.pk %}{{ sf.DELETE }}{% endif %}
+              <button type="button" class="btn btn-danger remove-item">Remove</button>
+            </div>
+            {% for hidden in sf.hidden_fields %}
+              {{ hidden }}
+            {% endfor %}
+          </div>
+          {% endfor %}
         </div>
-        <div class="col-sm-3 form-group floating-label">
-          {{ sf.quantity|add_class:"form-control" }}
-          <label>Quantity</label>
-        </div>
-        <div class="col-sm-3 form-group floating-label">
-          {{ sf.price|add_class:"form-control"|attr:"readonly:true" }}
-          <label>Price</label>
-        </div>
-        <div class="col-sm-2">
-          {% if formset.can_delete %}{{ sf.DELETE }}{% endif %}
+
+        <div class="mt-4 text-end">
+          <h4>Total: $<span id="order-total">{{ order.total_price|floatformat:2 }}</span></h4>
         </div>
       </div>
-      {% endfor %}
     </div>
 
-    <button type="submit" class="btn btn-primary">Submit Order</button>
+    <!-- Form Actions -->
+    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+      <a href="{% url 'index_order' %}" class="btn btn-secondary">Cancel</a>
+      <button type="submit" class="btn btn-primary">Update Order</button>
+    </div>
+
+    <!-- Empty Form Template -->
+    <template id="empty-form">
+      <div class="row align-items-end mb-3 order-item" data-index="__prefix__">
+        <div class="col-md-4 form-group floating-label">
+          {{ formset.empty_form.product|add_class:"form-control product-select" }}
+          <label>Product</label>
+        </div>
+        <div class="col-md-2 form-group floating-label">
+          {{ formset.empty_form.quantity|add_class:"form-control qty-input"}}
+          <label>Qty</label>
+        </div>
+        <div class="col-md-2 form-group floating-label">
+          {{ formset.empty_form.price|add_class:"form-control price-input"|attr:"readonly:readonly" }}
+          <label>Price</label>
+        </div>
+        <div class="col-md-2">
+          <button type="button" class="btn btn-danger remove-item">Remove</button>
+        </div>
+      </div>
+    </template>
   </form>
 </section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const productPrices = {
+    {% for product in products %}
+      "{{ product.id }}": {{ product.price|default:0 }}{% if not forloop.last %},{% endif %}
+    {% endfor %}
+  };
+
+  // Form Management
+  const formsetPrefix = '{{ formset.prefix }}';
+  const totalForms = document.getElementById(`id_${formsetPrefix}-TOTAL_FORMS`);
+  const itemsContainer = document.getElementById('order-items');
+  const emptyFormTemplate = document.getElementById('empty-form').innerHTML;
+
+  // Initialize existing items
+  document.querySelectorAll('.order-item').forEach(item => {
+    // Set initial price for existing items
+    const productSelect = item.querySelector('.product-select');
+    const quantityInput = item.querySelector('.qty-input');
+    const priceInput = item.querySelector('.price-input');
+    
+    if(productSelect.value && !priceInput.value) {
+      const price = productPrices[productSelect.value] || 0;
+      const quantity = parseFloat(quantityInput.value) || 0;
+      priceInput.value = (price * quantity).toFixed(2);
+    }
+    
+    initItem(item);
+  });
+  updateOrderTotal();
+
+  // Add item button handler
+  document.getElementById('add-item').addEventListener('click', function() {
+    const newIndex = parseInt(totalForms.value);
+    const newForm = emptyFormTemplate
+      .replace(/__prefix__/g, newIndex)
+      .replace(/name="form-__prefix__/g, `name="form-${newIndex}`)
+      .replace(/id="id_form-__prefix__/g, `id="id_form-${newIndex}`);
+
+    itemsContainer.insertAdjacentHTML('beforeend', newForm);
+    totalForms.value = newIndex + 1;
+
+    const newItem = itemsContainer.lastElementChild;
+    initItem(newItem);
+    updateOrderTotal();
+  });
+
+  // Form submission handler
+  document.getElementById('order-form').addEventListener('submit', function(e) {
+    const statusSelected = document.querySelector('input[name="order_status"]:checked');
+    if (!statusSelected) {
+      e.preventDefault();
+      alert('Please select an order status!');
+      return false;
+    }
+
+    if (document.querySelectorAll('.order-item').length === 0) {
+      e.preventDefault();
+      alert('Please add at least one order item!');
+    }
+  });
+
+  // Initialize item event listeners
+  function initItem(item) {
+    const productSelect = item.querySelector('.product-select');
+    const quantityInput = item.querySelector('.qty-input');
+    const removeBtn = item.querySelector('.remove-item');
+
+    productSelect.addEventListener('change', () => updateItemPrice(item));
+    quantityInput.addEventListener('input', () => updateItemPrice(item));
+    removeBtn.addEventListener('click', () => removeItem(item));
+  }
+
+  // Price calculation
+  function updateItemPrice(item) {
+    const productSelect = item.querySelector('.product-select');
+    const quantityInput = item.querySelector('.qty-input');
+    const priceInput = item.querySelector('.price-input');
+
+    const productId = productSelect.value;
+    const quantity = parseFloat(quantityInput.value) || 0;
+    const price = productPrices[productId] || 0;
+
+    priceInput.value = (price * quantity).toFixed(2);
+    updateOrderTotal();
+  }
+
+  // Remove item handler
+  function removeItem(item) {
+    const deleteField = item.querySelector('input[id$="-DELETE"]');
+    if(deleteField) {
+      // Mark existing item for deletion
+      deleteField.value = 'on';
+      item.style.display = 'none';
+    } else {
+      // Remove new item completely
+      item.remove();
+      const forms = document.querySelectorAll('.order-item');
+      forms.forEach((form, index) => {
+        form.querySelectorAll('input, select').forEach(element => {
+          const name = element.name.replace(/form-\d+/, `form-${index}`);
+          element.name = name;
+        });
+      });
+      totalForms.value = forms.length;
+    }
+    updateOrderTotal();
+  }
+
+  // Update total order price
+  function updateOrderTotal() {
+    let total = 0;
+    document.querySelectorAll('.price-input').forEach(input => {
+      if(!input.closest('.order-item').style.display) {
+        total += parseFloat(input.value) || 0;
+      }
+    });
+    document.getElementById('order-total').textContent = total.toFixed(2);
+  }
+});
+</script>
+
+<style>
+  .order-item:not(:last-child) {
+    border-bottom: 1px solid #dee2e6;
+    padding-bottom: 1rem;
+  }
+  .form-floating > label {
+    z-index: 3;
+  }
+  [style*="display: none"] {
+    display: none !important;
+  }
+  .btn-outline-primary.active {
+    background-color: #0d6efd;
+    color: white !important;
+  }
+</style>
 {% endblock %}

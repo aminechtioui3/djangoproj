@@ -1,7 +1,7 @@
 {% extends 'layout.html' %}
 {% load widget_tweaks %}
 
-{% block title %}Add Product{% endblock %}
+{% block title %}Edit Product{% endblock %}
 
 {% block body %}
 <section>
@@ -11,18 +11,35 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-head style-primary">
-                        <header>Add Product</header>
+                        <header>Edit Product</header>
                         <div class="tools">
                             <a class="btn btn-icon-toggle btn-collapse"><i class="fa fa-angle-down"></i></a>
                             <a class="btn btn-icon-toggle btn-close"><i class="md md-close"></i></a>
                         </div>
                     </div>
                     <div class="card-body">
-                        <form class="form" role="form" action="" method="post" enctype="multipart/form-data">
+                        <form class="form" role="form" action="{% url 'edit_product' product.id %}" method="post" enctype="multipart/form-data">
                             {% csrf_token %}
                             <div class="row">
                                 <div class="col-sm-6">
-                                    <header>Product Info</header>
+                                    <header>Product Information</header>
+
+                                    <!-- Form Errors -->
+                                    {% if product_form.errors %}
+                                    <div class="alert alert-danger mb-4">
+                                        <h4 class="alert-heading">Form Errors</h4>
+                                        <ul class="mb-0">
+                                            {% for field in product_form %}
+                                                {% for error in field.errors %}
+                                                    <li><strong>{{ field.label }}:</strong> {{ error }}</li>
+                                                {% endfor %}
+                                            {% endfor %}
+                                            {% for error in product_form.non_field_errors %}
+                                                <li>{{ error }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                    {% endif %}
 
                                     <!-- Product Name -->
                                     <div class="form-group floating-label">
@@ -44,13 +61,13 @@
 
                                     <!-- Product Details -->
                                     <div class="form-group floating-label">
-                                        {% render_field product_form.product_details class="form-control" rows="2" %}
+                                        {% render_field product_form.product_details class="form-control" rows="4" %}
                                         <label for="{{ product_form.product_details.id_for_label }}">Product Details</label>
                                     </div>
 
                                     <!-- Active Status -->
                                     <div class="form-group floating-label">
-                                        <div class="checkbox">
+                                        <div class="checkbox checkbox-styled">
                                             <label>
                                                 {% render_field product_form.active class="form-check-input" %}
                                                 <span class="checkbox-material"></span>
@@ -63,7 +80,8 @@
                                 <div class="col-md-12">
                                     <hr>
                                     <div class="card-actionbar-row">
-                                        <input type="submit" class="btn btn-flat btn-primary ink-reaction" value="SUBMIT">
+                                        <a href="{% url 'index_product' %}" class="btn btn-default">Cancel</a>
+                                        <button type="submit" class="btn btn-primary">Update Product</button>
                                     </div>
                                 </div>
                             </div>
@@ -77,25 +95,36 @@
 </section>
 
 <style>
-    .select2 {
+    .select2-container {
         width: 100% !important;
     }
     .checkbox label {
         display: flex;
         align-items: center;
         gap: 8px;
+        padding-left: 0;
     }
-    .form-check-input {
-        margin-top: 0;
+    .checkbox-material {
+        position: relative;
+        top: -1px;
     }
 </style>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize Select2 for category dropdown
+    // Initialize Select2 with current category selected
     $('.select2').select2({
         placeholder: "Select a category",
         allowClear: true
+    });
+
+    // Initialize material checkbox
+    $('.checkbox-styled input[type="checkbox"]').each(function() {
+        if($(this).is(':checked')) {
+            $(this).parent().addClass('checked');
+        }
+    }).on('change', function() {
+        $(this).parent().toggleClass('checked', this.checked);
     });
 });
 </script>

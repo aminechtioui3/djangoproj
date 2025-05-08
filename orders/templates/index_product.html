@@ -1,54 +1,43 @@
 {% extends 'layout.html' %}
 
-{% block title %} All Orders {% endblock %}
+{% block title %}Products{% endblock %}
 
 {% block body %}
-                <section>
-                    <div class="section-body">
-                        <!-- BEGIN DATATABLE 2 -->
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <div class="card">
-                                    <div class="card-head style-primary">
-                                        <header>All Products Data</header>
-                                        <div class="tools">
-                                            <a class="btn btn-icon-toggle btn-collapse"><i class="fa fa-angle-down"></i></a>
-                                            <a class="btn btn-icon-toggle btn-close"><i class="md md-close"></i></a>
-                                        </div>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="table-responsive">
-                                            <table id="datatable2" class="table order-column hover">
-                                                <thead>
-                                                    <tr>
-                                                        <th width="70px">ID</th>
-                                                        <th>Product Name</th>
-                                                        <th width="50%">Product details</th>
-                                                        <th width="100px">Price</th>
-                                                        <th width="70px">Buttons</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    {% for product in products %}
-                                                        <tr class="gradeX">
-                                                            <td>{{ product.id }}</td>
-                                                            <td>{{ product.product_name }}</td>
-                                                            <td>{{ product.product_details }}</td>
-                                                            <td>{{ product.price }}</td>
-                                                            <td>
-                                                                <a href="{% url 'destroy_product' product.id %}" class="btn ink-reaction btn-floating-action btn-danger" onclick="return confirm('Are you sure you want to delete this?')"><i class="md md-delete"></i> </a>
-                                                            </td>
-                                                        </tr>
-                                                    {% endfor %}
-                                                </tbody>
-                                            </table>
-                                        </div><!--end .table-responsive -->
-                                    </div>   
-                                </div>       
-                            </div><!--end .col -->
-                        </div><!--end .row -->
-                        <!-- END DATATABLE 2 -->
+<section>
+  <h1>All Products</h1>
+  <a href="{% url 'new_product' %}" class="btn btn-primary mb-3">+ New Product</a>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Name</th>
+        <th>Details</th>
+        <th>Price</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for product in products %}
+      <tr>
+        <td>{{ product.id }}</td>
+        <td>{{ product.product_name }}</td>
+        <td>{{ product.product_details }}</td>
+        <td>{{ product.price }}</td>
+        <td>
 
-                    </div><!--end .section-body -->
-                </section>
+          <a href="{% url 'edit_product' product.id %}">Edit </a> |
+          <a href="{% url 'destroy_product' product.id %}"
+             onclick="return confirm('Delete this product?');">
+            Delete
+          </a>
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="5">No products.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
 {% endblock %}

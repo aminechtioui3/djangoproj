@@ -65,9 +65,11 @@ class OrderForm(ModelForm):
         widget=forms.DateInput(attrs={'type': 'date'})
     )
     payment_option = forms.ChoiceField(choices=PAYMENT_CHOICES)
-    order_status   = forms.TypedChoiceField(
+    order_status = forms.ChoiceField(
         choices=STATUS_CHOICES,
-        widget=forms.RadioSelect
+        widget=forms.RadioSelect(attrs={'class': 'form-check-input'}),
+        required=True,
+        initial='Confirm'  # Add default selection
     )
     table  = forms.ModelChoiceField(
         queryset=Table.objects.all(),
