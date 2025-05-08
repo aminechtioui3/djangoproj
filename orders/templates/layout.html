@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<title>{% block title %} {% endblock %} | DjangoOMS</title>
+		<title>{% block title %} {% endblock %} | restaurantOMS</title>
 
 		<!-- BEGIN META -->
 		<meta charset="utf-8">
@@ -42,7 +42,7 @@
 						<li class="header-nav-brand" >
 							<div class="brand-holder">
 								<a href="{% url 'home' %}">
-									<span class="text-lg text-light text-danger">INFORTECH</span><span class="text-lg text-bold text-primary"> SOLUTIONS</span>
+									<span class="text-lg text-light text-danger">restaurant</span><span class="text-lg text-bold text-primary"> OMS</span>
 								</a>
 							</div>
 						</li>
@@ -59,7 +59,7 @@
 						<li class="dropdown">
 							<a href="javascript:void(0);" class="dropdown-toggle ink-reaction" data-toggle="dropdown">
 								<span class="profile-info">
-									<h4 class="text-lg text-bold text-primary">DjangoOMS Application</h4>
+									<h4 class="text-lg text-bold text-primary">restaurantOMS Application</h4>
 								</span>
 							</a>
 							<ul class="dropdown-menu animation-dock">
@@ -143,17 +143,30 @@
 							</ul><!--end /submenu -->
 						</li><!--end /menu-li -->
 						<!-- END ORDER -->
+						 <!-- BEGIN CATEGORIE -->
+						<li class="gui-folder">
+							<a>
+								<div class="gui-icon"><i class="fa fa-folder"></i></div>
+								<span class="title">Categorie</span>
+							</a>
+							<!--start submenu -->
+							<ul>
+                                <li><a href="{% url 'index_category'%}" ><span class="title">All Categories</span></a></li>
+								<li><a href="{% url 'new_category' %}" ><span class="title">Add Category</span></a></li>
+							</ul><!--end /submenu -->
+						</li><!--end /menu-li -->
+						<!-- END CATEGORY -->
 
 						<!-- BEGIN PRODUCT -->
 						<li class="gui-folder">
 							<a>
-								<div class="gui-icon"><i class="fa fa-cubes"></i></div>
-								<span class="title">Product</span>
+								<div class="gui-icon"><i class="fa fa-cutlery"></i></div>
+								<span class="title">Meal</span>
 							</a>
 							<!--start submenu -->
 							<ul>
-                                <li><a href="{% url 'index_product'%}" ><span class="title">All Products</span></a></li>
-								<li><a href="{% url 'new_product' %}" ><span class="title">Add Product</span></a></li>
+                                <li><a href="{% url 'index_product'%}" ><span class="title">All Meals</span></a></li>
+								<li><a href="{% url 'new_product' %}" ><span class="title">Add Meal</span></a></li>
 							</ul><!--end /submenu -->
 						</li><!--end /menu-li -->
 						<!-- END PRODUCT -->
@@ -193,7 +206,7 @@
 						  <!-- PROFILE -->
 						  <li class="gui-folder">
 							<a>
-							  <div class="gui-icon"><i class="fa fa-user-circle"></i></div>
+							  <div class="gui-icon"><i class="fa fa-lock"></i></div>
 							  <span class="title">Profile</span>
 							</a>
 							<ul>
@@ -211,11 +224,7 @@
 					</ul><!--end .main-menu -->
 					<!-- END MAIN MENU -->
 
-					<div class="menubar-foot-panel">
-						<small class="no-linebreak hidden-folded">
-							<span class="opacity-75">Copyright &copy; {% now "Y" %}</span> <strong>INFTECH Solutions</strong>
-						</small>
-					</div>
+					
 				</div><!--end .menubar-scroll-panel-->
 			</div><!--end #menubar-->
 			<!-- END MENUBAR -->
